@@ -26,9 +26,7 @@ public class Scheduler {
     private final JobLauncher jobLauncher;
 
     @Scheduled(cron = "${cron.expression.naverNewsRank}")
-    public void startJobNewsRank() {
-        log.info("[startJobNewsRank] ::: START");
-
+    public void startJobNaverNewsRank() {
         Map<String, JobParameter> jobParameterMap = new HashMap<>();
         jobParameterMap.put("requestDate", new JobParameter(String.valueOf(LocalDateTime.now())));
         JobParameters jobParameters = new JobParameters(jobParameterMap);

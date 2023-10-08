@@ -31,24 +31,28 @@ public class JobNaverNewsRankConfig {
 
     @Value("${endpoint.naver.news.rank}")
     private String endpointNaverNewsRank;
+
     @Bean
     public Job jobNaverNewsRank() {
+        log.info("[jobNaverNewsRank]");
         return jobBuilderFactory.get("jobNaverNewsRank")
             .start(stepNaverNewsRank())
             .build();
     }
+
     @Bean
     public Step stepNaverNewsRank() {
+        log.info("[stepNaverNewsRank]");
         return stepBuilderFactory.get("stepNaverNewsRank")
             .tasklet((contribution, chunkContext) -> {
                 log.info("stepNaverNewsRank");
-
                 List<Board> list = new ArrayList<>();
+
                 try {
                     Document contents = crawlerUtil.getContents(endpointNaverNewsRank);
                     Elements rankList = contents.select(".rankingnews_list");
-                    for (Element elm : rankList) {
-                        Elements li = elm.getElementsByTag("li");
+                    for (Element e : rankList) {
+                        Elements li = e.getElementsByTag("li");
                         for (Element listContent : li) {
                             String title = listContent.select(".list_content a").text();
                             String content = listContent.getElementsByTag("a").attr("href");

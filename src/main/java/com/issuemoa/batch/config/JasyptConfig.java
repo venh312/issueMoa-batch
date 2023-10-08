@@ -11,14 +11,13 @@ import org.springframework.context.annotation.Configuration;
 public class JasyptConfig {
     @Value("${jasypt.key}")
     private String key;
-    private static final String ALGORITHM = "PBEWithMD5AndDES";
 
     @Bean("jasyptStringEncryptor")
     public StringEncryptor stringEncryptor() {
         PooledPBEStringEncryptor encryptor = new PooledPBEStringEncryptor();
         SimpleStringPBEConfig config = new SimpleStringPBEConfig();
         config.setPassword(key);
-        config.setAlgorithm(ALGORITHM);
+        config.setAlgorithm("PBEWithMD5AndDES");
         config.setKeyObtentionIterations("1000"); // 반복할 해싱 회수
         config.setPoolSize("1"); // 인스턴스 pool
         config.setProviderName("SunJCE"); // 프로바이더
