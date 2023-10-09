@@ -1,6 +1,7 @@
 package com.issuemoa.batch.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Component;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -10,6 +11,7 @@ import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Component
@@ -19,9 +21,9 @@ public class HttpUtil {
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(new URI(url));
 
         if (isPost)
-            requestBuilder = requestBuilder.GET();
-        else
             requestBuilder = requestBuilder.POST(HttpRequest.BodyPublishers.ofString(data));
+        else
+            requestBuilder = requestBuilder.GET();
 
         // Header 추가
         Map<String, String> headers = new HashMap<>();
@@ -36,61 +38,42 @@ public class HttpUtil {
         return requestBuilder.build();
     }
 
-
-    public HashMap<String, Object> send(String url, String data, boolean isPost, String contentType, String authorization) {
-        HashMap<String, Object> resultMap = new HashMap<>();
-
+    public JSONObject send(String url, String data, boolean isPost, String contentType, String authorization) {
         try {
-            // HttpClient 생성
             HttpClient httpClient = HttpClient.newHttpClient();
-            // HTTP 요청 생성
             HttpRequest httpRequest = httpRequest(url, data, isPost, contentType, authorization);
-            // 동기적으로 API 호출하고 응답을 받음
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-
-            // 응답 코드 확인 (200은 성공을 의미)
             int statusCode = response.statusCode();
-            if (statusCode == 200) {
-                // API 응답 데이터 읽기
-                String responseBody = response.body();
-                // 응답 데이터 출력
-                System.out.println(responseBody);
-            } else {
-                System.out.println("API 호출 실패. 응답 코드: " + statusCode);
-            }
+            if (statusCode == 200)
+                return new JSONObject(response.body());
+            else
+                log.info("[API 호출 실패. 응답 코드] => {}", statusCode);
         } catch (Exception e) {
             log.error(e.getMessage());
         }
-
-        return resultMap;
+        return null;
     }
 
-    public HashMap<String, Object> sendAsync(String url, String data, boolean isPost, String contentType, String authorization) {
-        HashMap<String, Object> resultMap = new HashMap<>();
-        try {
-            // HttpClient 생성
-            HttpClient httpClient = HttpClient.newHttpClient();
-            // HTTP 요청 생성
-            HttpRequest httpRequest = httpRequest(url, data, isPost, contentType, authorization);
+    public String sendAsync(String url, String data, boolean isPost, String contentType, String authorization) {
+        AtomicReference<String> jsonString = new AtomicReference<>("");
 
+        try {
+            HttpClient httpClient = HttpClient.newHttpClient();
+            HttpRequest httpRequest = httpRequest(url, data, isPost, contentType, authorization);
             CompletableFuture<HttpResponse<String>> responseFuture = httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString());
 
             // 비동기 응답을 처리
             responseFuture.thenAccept(response -> {
-                // 응답 코드 확인 (200은 성공을 의미)
                 int statusCode = response.statusCode();
-                if (statusCode == 200) {
-                    // API 응답 데이터 읽기
-                    String responseBody = response.body();
-                    // 응답 데이터 출력
-                    System.out.println(responseBody);
-                } else {
-                    System.out.println("API 호출 실패. 응답 코드: " + statusCode);
-                }
+                if (statusCode == 200)
+                    jsonString.set(response.body());
+                else
+                    log.info("[API 호출 실패. 응답 코드] => {}", statusCode);
             }).join(); // 비동기 작업이 완료될 때까지 대기
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return resultMap;
+
+        return jsonString.get();
     }
 }

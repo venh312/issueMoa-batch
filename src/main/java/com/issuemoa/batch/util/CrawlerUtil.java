@@ -10,7 +10,6 @@ import java.io.IOException;
 @Slf4j
 @Component
 public class CrawlerUtil {
-
     public Document getContents(String url) throws IOException {
         // Connection 생성
         Connection conn = Jsoup.connect(url);
