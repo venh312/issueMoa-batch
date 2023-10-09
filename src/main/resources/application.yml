@@ -22,7 +22,8 @@ logging:
 
 cron:
   expression:
-    naverNewsRank: 0 0 */2 * * *
+    naverNewsRank: 0 0 */12 * * * # 12시간 마다
+    youtubePopular: 0 0 * * 3 * # 매주 수요일 
 
 jasypt:
   key: ${jasyptKey}
@@ -31,3 +32,9 @@ endpoint:
   naver:
     news:
       rank: https://news.naver.com/main/ranking/popularDay.naver
+  google:
+    youtube:
+      popular: https://www.googleapis.com/youtube/v3/videos
+api:
+  key:
+    google: ENC(exO2RqRPBk7bZ34Pm6GeGGG6LmFDtvUVw2WkB01AjjGxq0O39VffrdaLd5ubeTUV)

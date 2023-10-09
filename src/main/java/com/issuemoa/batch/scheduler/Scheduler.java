@@ -22,7 +22,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Component
 public class Scheduler {
-    private final Job jobNewsRank;
+    private final Job jobNaverNewsRank;
+    private final Job jobYoutubePopular;
     private final JobLauncher jobLauncher;
 
     @Scheduled(cron = "${cron.expression.naverNewsRank}")
@@ -32,7 +33,23 @@ public class Scheduler {
         JobParameters jobParameters = new JobParameters(jobParameterMap);
 
         try {
-            jobLauncher.run(jobNewsRank, jobParameters);
+            log.info("[startJobNaverNewsRank]");
+            jobLauncher.run(jobNaverNewsRank, jobParameters);
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
+                 JobParametersInvalidException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    @Scheduled(cron = "${cron.expression.youtubePopular}")
+    public void startJobYoutubePopular() {
+        Map<String, JobParameter> jobParameterMap = new HashMap<>();
+        jobParameterMap.put("requestDate", new JobParameter(String.valueOf(LocalDateTime.now())));
+        JobParameters jobParameters = new JobParameters(jobParameterMap);
+
+        try {
+            log.info("[startJobYoutubePopular]");
+            jobLauncher.run(jobYoutubePopular, jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
                  JobParametersInvalidException e) {
             log.error(e.getMessage());
