@@ -1,6 +1,7 @@
 package com.issuemoa.batch.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Component;
 import java.net.URI;
@@ -54,9 +55,8 @@ public class HttpUtil {
         return null;
     }
 
-    public String sendAsync(String url, String data, boolean isPost, String contentType, String authorization) {
-        AtomicReference<String> jsonString = new AtomicReference<>("");
-
+    public JSONObject sendAsync(String url, String data, boolean isPost, String contentType, String authorization) {
+        AtomicReference<JSONObject> jsonObject = null;
         try {
             HttpClient httpClient = HttpClient.newHttpClient();
             HttpRequest httpRequest = httpRequest(url, data, isPost, contentType, authorization);
@@ -65,15 +65,20 @@ public class HttpUtil {
             // 비동기 응답을 처리
             responseFuture.thenAccept(response -> {
                 int statusCode = response.statusCode();
-                if (statusCode == 200)
-                    jsonString.set(response.body());
-                else
+                if (statusCode == 200) {
+                    try {
+                        jsonObject.set(new JSONObject(response.body()));
+                    } catch (JSONException e) {
+                        log.error(e.getMessage());
+                    }
+                } else {
                     log.info("[API 호출 실패. 응답 코드] => {}", statusCode);
+                }
             }).join(); // 비동기 작업이 완료될 때까지 대기
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
 
-        return jsonString.get();
+        return jsonObject.get();
     }
 }
