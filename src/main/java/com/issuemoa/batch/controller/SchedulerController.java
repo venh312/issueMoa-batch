@@ -15,7 +15,7 @@ public class SchedulerController {
 
     @GetMapping("/execute/{type}")
     public void executeScheduler(@PathVariable String type) {
-        log.info("[executeScheduler] => {}", type);
+        log.info("[배치 실행 SchedulerController] => {}", type);
         if (type.equals("news")) {
             scheduler.startJobNaverNewsRank();
         } else if (type.equals("youtube")) {

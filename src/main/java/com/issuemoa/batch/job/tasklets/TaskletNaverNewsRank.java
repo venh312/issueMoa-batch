@@ -35,6 +35,7 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
     private final BoardService boardService;
     private String exitCode = "FAILED";
     private String exitMessage = "";
+    private int size = 0;
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
@@ -45,13 +46,17 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
     public RepeatStatus execute(StepContribution contribution, ChunkContext context) {
         final long batchStartTime = System.currentTimeMillis();
         try {
-            log.info("[requestDate] => " + requestDate);
+            log.info("[Tasklet 실행 requestDate] => " + requestDate);
             List<Board> list = new ArrayList<>();
+
             Document contents = crawlerUtil.getContents(endpointNaverNewsRank);
             Elements rankList = contents.select(".rankingnews_list");
+
+            if (!rankList.isEmpty())
+                boardService.deleteByType("NAVER_NEWS");
+
             for (Element e : rankList) {
-                Elements li = e.getElementsByTag("li");
-                for (Element listContent : li) {
+                for (Element listContent : e.getElementsByTag("li")) {
                     String title = listContent.select(".list_content a").text();
                     String content = listContent.getElementsByTag("a").attr("href");
                     String src = listContent.select("a > img").attr("data-src");
@@ -59,8 +64,7 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
                     src = !src.isEmpty() ? src : listContent.select("a > img").attr("onerror");
 
                     Board board = Board.builder()
-                        .type("NEWS")
-                        .allTimeYn("Y")
+                        .type("NAVER_NEWS")
                         .title(title)
                         .contents(content)
                         .url(src)
@@ -70,18 +74,24 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
                 }
             }
 
+            size = list.size();
             boardService.saveAll(list);
             this.exitCode = "COMPLETED";
+
         } catch (Exception e) {
             this.exitMessage = e.getMessage();
         }
-        log.info("[" + this.getClass().getSimpleName() + "] " + ((System.currentTimeMillis() - batchStartTime) / 1000.0) + " 처리 시간(초)");
+
+        log.info("[" + this.getClass().getSimpleName() + "] :: " + ((System.currentTimeMillis() - batchStartTime) / 1000.0) + " 처리 시간(초)");
+        log.info("[" + this.getClass().getSimpleName() + "] :: " + size + "건 등록");
+
         return RepeatStatus.FINISHED;
     }
 
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
-        log.info("[afterStep] => " + stepExecution);
+        log.info("[Tasklet 종료] Status => " + stepExecution.getStatus());
+//        log.info("[Tasklet 종료] => " + stepExecution);
         return new ExitStatus(exitCode, exitMessage);
     }
 }

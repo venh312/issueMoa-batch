@@ -33,7 +33,7 @@ public class Scheduler {
         JobParameters jobParameters = new JobParameters(jobParameterMap);
 
         try {
-            log.info("[startJobNaverNewsRank]");
+            log.info("[Scheduler 실행 => startJobNaverNewsRank]");
             jobLauncher.run(jobNaverNewsRank, jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
                  JobParametersInvalidException e) {
@@ -48,7 +48,7 @@ public class Scheduler {
         JobParameters jobParameters = new JobParameters(jobParameterMap);
 
         try {
-            log.info("[startJobYoutubePopular]");
+            log.info("[Scheduler 실행 => startJobYoutubePopular]");
             jobLauncher.run(jobYoutubePopular, jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
                  JobParametersInvalidException e) {

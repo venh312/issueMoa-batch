@@ -18,6 +18,9 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Slf4j
 @Component
@@ -35,6 +38,7 @@ public class TaskletYoutubePopular implements Tasklet, StepExecutionListener {
 
     private String exitCode = "FAILED";
     private String exitMessage = "";
+    private int size = 0;
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
@@ -45,7 +49,8 @@ public class TaskletYoutubePopular implements Tasklet, StepExecutionListener {
     public RepeatStatus execute(StepContribution contribution, ChunkContext context) {
         final long batchStartTime = System.currentTimeMillis();
         try {
-            log.info("[requestDate] => {}", requestDate);
+            log.info("[Tasklet 실행 requestDate] => {}", requestDate);
+            List<Board> list = new ArrayList<>();
 
             String url = endpointYoutubePopular
                     + "?part=snippet"
@@ -57,34 +62,42 @@ public class TaskletYoutubePopular implements Tasklet, StepExecutionListener {
             JSONObject result = httpUtil.send(url, "", false, "application/json", "");
             JSONArray jsonArray = result.getJSONArray("items");
 
+            // 기존 인기 동영상 목록 삭제
+            if (jsonArray.length() > 0)
+                boardService.deleteByType("YOUTUBE");
+
             for (int i = 0, n = jsonArray.length(); i < n; i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
                 JSONObject snippet = obj.getJSONObject("snippet");
 
                 Board board = Board.builder()
                     .type("YOUTUBE")
-                    .startDate(snippet.getString("publishedAt"))
-                    .allTimeYn("Y")
                     .title(snippet.getString("title"))
                     .contents(snippet.getString("description"))
                     .url(obj.getString("id"))
                     .build();
 
-                boardService.save(board);
+                list.add(board);
             }
 
+            size = list.size();
+            boardService.saveAll(list);
             this.exitCode = "COMPLETED";
+
         } catch (Exception e) {
             this.exitMessage = e.getMessage();
         }
 
-        log.info("[" + this.getClass().getSimpleName() + "] " + ((System.currentTimeMillis() - batchStartTime) / 1000.0) + " 처리 시간(초)");
+        log.info("[" + this.getClass().getSimpleName() + "] :: " + ((System.currentTimeMillis() - batchStartTime) / 1000.0) + " 처리 시간(초)");
+        log.info("[" + this.getClass().getSimpleName() + "] :: " + size + "건 등록");
+
         return RepeatStatus.FINISHED;
     }
 
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
-        log.info("[afterStep] => " + stepExecution);
+        log.info("[Tasklet 종료] Status => " + stepExecution.getStatus());
+//        log.info("[Tasklet 종료] => " + stepExecution);
         return new ExitStatus(exitCode, exitMessage);
     }
 }

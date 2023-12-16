@@ -39,4 +39,9 @@ public class BoardService {
     public void deleteById(String id) {
         boardRepository.deleteById(id);
     }
+
+    public void deleteByType(String type) {
+        boardRepository.deleteByType(type);
+    }
+
 }
