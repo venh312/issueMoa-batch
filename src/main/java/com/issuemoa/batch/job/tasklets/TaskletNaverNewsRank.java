@@ -53,7 +53,7 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
             Elements rankList = contents.select(".rankingnews_list");
 
             if (!rankList.isEmpty())
-                boardService.deleteByType("NAVER_NEWS");
+                boardService.deleteByType("news");
 
             for (Element e : rankList) {
                 for (Element listContent : e.getElementsByTag("li")) {
@@ -64,7 +64,7 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
                     src = !src.isEmpty() ? src : listContent.select("a > img").attr("onerror");
 
                     Board board = Board.builder()
-                        .type("NAVER_NEWS")
+                        .type("news")
                         .title(title)
                         .contents(content)
                         .url(src)

@@ -64,14 +64,14 @@ public class TaskletYoutubePopular implements Tasklet, StepExecutionListener {
 
             // 기존 인기 동영상 목록 삭제
             if (jsonArray.length() > 0)
-                boardService.deleteByType("YOUTUBE");
+                boardService.deleteByType("youtube");
 
             for (int i = 0, n = jsonArray.length(); i < n; i++) {
                 JSONObject obj = jsonArray.getJSONObject(i);
                 JSONObject snippet = obj.getJSONObject("snippet");
 
                 Board board = Board.builder()
-                    .type("YOUTUBE")
+                    .type("youtube")
                     .title(snippet.getString("title"))
                     .contents(snippet.getString("description"))
                     .url(obj.getString("id"))
