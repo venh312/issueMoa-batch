@@ -57,11 +57,16 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
 
             for (Element e : rankList) {
                 for (Element listContent : e.getElementsByTag("li")) {
+                    log.info("listContent :: {}", listContent);
                     String title = listContent.select(".list_content a").text();
                     String content = listContent.getElementsByTag("a").attr("href");
-                    String src = listContent.select("a > img").attr("data-src");
+                    String src = listContent.select("a > img").attr("src");
 
-                    src = !src.isEmpty() ? src : listContent.select("a > img").attr("onerror");
+                    if (src.isEmpty()) {
+                        src = listContent.select("a > img").attr("data-src");
+                        if (src.isEmpty())
+                            src = listContent.select("a > img").attr("onerror");
+                    }
 
                     Board board = Board.builder()
                         .type("news")
