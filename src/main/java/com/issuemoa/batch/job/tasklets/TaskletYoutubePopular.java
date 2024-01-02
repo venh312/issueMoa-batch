@@ -2,10 +2,11 @@ package com.issuemoa.batch.job.tasklets;
 
 import com.issuemoa.batch.domain.board.Board;
 import com.issuemoa.batch.service.BoardService;
-import com.issuemoa.batch.util.HttpUtil;
+import com.issuemoa.batch.util.YoutubeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
@@ -17,7 +18,6 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,12 +28,8 @@ import java.util.List;
 public class TaskletYoutubePopular implements Tasklet, StepExecutionListener {
     @Value("#{jobParameters[requestDate]}")
     private String requestDate;
-    @Value("${endpoint.google.youtube.popular}")
-    private String endpointYoutubePopular;
-    @Value("${api.key.google}")
-    private String googleKey;
 
-    private final HttpUtil httpUtil;
+    private final YoutubeUtil youtubeUtil;
     private final BoardService boardService;
 
     private String exitCode = "FAILED";
@@ -48,43 +44,32 @@ public class TaskletYoutubePopular implements Tasklet, StepExecutionListener {
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext context) {
         final long batchStartTime = System.currentTimeMillis();
+
         try {
             log.info("[Tasklet 실행 requestDate] => {}", requestDate);
-            List<Board> list = new ArrayList<>();
 
-            String url = endpointYoutubePopular
-                    + "?part=snippet"
-                    + "&chart=mostPopular"
-                    + "&maxResults=50"
-                    + "&regionCode=kr"
-                    + "&key=" + googleKey;
+            List<JSONArray> jsonArrayList = new ArrayList<>();
+            String nextPageToken = "";
 
-            JSONObject result = httpUtil.send(url, "", false, "application/json", "");
-            JSONArray jsonArray = result.getJSONArray("items");
+            do {
+                JSONObject result = youtubeUtil.popular(nextPageToken);
+                addItemsToArrayList(result, jsonArrayList);
+                nextPageToken = updateNextPageToken(result);
+            } while (!nextPageToken.isEmpty());
 
-            // 기존 인기 동영상 목록 삭제
-            if (jsonArray.length() > 0)
+            // 인기 동영상 목록 삭제
+            if (!jsonArrayList.isEmpty()) {
                 boardService.deleteByType("youtube");
-
-            for (int i = 0, n = jsonArray.length(); i < n; i++) {
-                JSONObject obj = jsonArray.getJSONObject(i);
-                JSONObject snippet = obj.getJSONObject("snippet");
-
-                Board board = Board.builder()
-                    .type("youtube")
-                    .title(snippet.getString("title"))
-                    .contents(snippet.getString("description"))
-                    .url(obj.getString("id"))
-                    .build();
-
-                list.add(board);
             }
+
+            List<Board> list = createBoardList(jsonArrayList);
 
             size = list.size();
             boardService.saveAll(list);
             this.exitCode = "COMPLETED";
 
         } catch (Exception e) {
+            log.error("Exception occurred: {}", e.getMessage(), e);
             this.exitMessage = e.getMessage();
         }
 
@@ -99,5 +84,40 @@ public class TaskletYoutubePopular implements Tasklet, StepExecutionListener {
         log.info("[Tasklet 종료] Status => " + stepExecution.getStatus());
 //        log.info("[Tasklet 종료] => " + stepExecution);
         return new ExitStatus(exitCode, exitMessage);
+    }
+
+    private void addItemsToArrayList(JSONObject result, List<JSONArray> jsonArrayList) throws JSONException {
+        if (result.has("items")) {
+            jsonArrayList.add(result.getJSONArray("items"));
+        }
+    }
+
+    private String updateNextPageToken(JSONObject result) throws JSONException {
+        return result.has("nextPageToken") ? (String) result.get("nextPageToken") : "";
+    }
+
+    private List<Board> createBoardList(List<JSONArray> jsonArrayList) throws JSONException {
+        List<Board> list = new ArrayList<>();
+
+        for (JSONArray jsonArray : jsonArrayList) {
+            for (int j = 0, m = jsonArray.length(); j < m; j++) {
+                JSONObject obj = jsonArray.getJSONObject(j);
+                JSONObject snippet = obj.getJSONObject("snippet");
+                JSONObject thumbnails = snippet.getJSONObject("thumbnails");
+                JSONObject thumbnailsObj = thumbnails.getJSONObject("default");
+
+                Board board = Board.builder()
+                        .type("youtube")
+                        .title(snippet.getString("title"))
+                        .contents(snippet.getString("description"))
+                        .url(obj.getString("id"))
+                        .thumbnail(thumbnailsObj.getString("url"))
+                        .build();
+
+                list.add(board);
+            }
+        }
+
+        return list;
     }
 }

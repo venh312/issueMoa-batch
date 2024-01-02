@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Component
 public class HttpUtil {
     private HttpRequest httpRequest(String url, String data, boolean isPost, String contentType, String authorization) throws URISyntaxException {
+        log.info("[HTTP 요청 생성] ==> {}", url);
         // HTTP 요청 생성
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder().uri(new URI(url));
 
