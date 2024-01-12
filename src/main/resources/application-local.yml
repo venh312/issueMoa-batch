@@ -1,12 +1,10 @@
 server:
-  port: 20010
+  port: 30010
 spring:
   application:
     name: issueMoaBatch
-  profiles:
-    active: docker
   config:
-    import: optional:configserver:http://issuemoa-config:8888
+    import: optional:configserver:http://localhost:8888
   batch:
     job:
       enabled: false
