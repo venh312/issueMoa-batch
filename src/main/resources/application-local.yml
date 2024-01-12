@@ -14,6 +14,11 @@ logging:
   level:
     root: info
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
 endpoint:
   naver:
     news:
@@ -24,7 +29,5 @@ endpoint:
 
 cron:
   expression:
-    naverNewsRank: 0 0 */1 * * * # 1시간 마다
-    youtubePopular: 0 0 */1 * * * # 1시간 마다
-    #youtubePopular: 0 0 * * 3 * # 매주 수요일
-
+    naverNewsRank: 0 0 * * * * # 매시 정각
+    youtubePopular: 0 0 * * * * # 매시 정각
