@@ -1,6 +1,6 @@
-package com.issuemoa.batch.controller;
+package com.issuemoa.batch.presentation;
 
-import com.issuemoa.batch.scheduler.Scheduler;
+import com.issuemoa.batch.infrastructure.scheduler.Scheduler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

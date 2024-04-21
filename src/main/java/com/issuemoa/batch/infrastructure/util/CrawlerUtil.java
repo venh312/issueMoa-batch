@@ -1,4 +1,4 @@
-package com.issuemoa.batch.util;
+package com.issuemoa.batch.infrastructure.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;

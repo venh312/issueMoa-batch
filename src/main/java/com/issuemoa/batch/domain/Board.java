@@ -1,4 +1,4 @@
-package com.issuemoa.batch.domain.board;
+package com.issuemoa.batch.domain;
 
 import lombok.*;
 import org.bson.types.ObjectId;

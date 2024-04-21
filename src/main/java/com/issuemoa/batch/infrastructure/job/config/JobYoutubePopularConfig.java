@@ -1,6 +1,6 @@
-package com.issuemoa.batch.job.configs;
+package com.issuemoa.batch.infrastructure.job.config;
 
-import com.issuemoa.batch.job.tasklets.TaskletYoutubePopular;
+import com.issuemoa.batch.infrastructure.job.tasklets.TaskletYoutubePopular;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;

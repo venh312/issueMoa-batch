@@ -1,4 +1,4 @@
-package com.issuemoa.batch.domain.board;
+package com.issuemoa.batch.domain;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

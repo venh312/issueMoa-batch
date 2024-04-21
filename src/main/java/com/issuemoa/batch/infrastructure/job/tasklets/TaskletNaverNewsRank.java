@@ -1,8 +1,8 @@
-package com.issuemoa.batch.job.tasklets;
+package com.issuemoa.batch.infrastructure.job.tasklets;
 
-import com.issuemoa.batch.domain.board.Board;
-import com.issuemoa.batch.service.BoardService;
-import com.issuemoa.batch.util.CrawlerUtil;
+import com.issuemoa.batch.domain.Board;
+import com.issuemoa.batch.application.BoardService;
+import com.issuemoa.batch.infrastructure.util.CrawlerUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.nodes.Document;

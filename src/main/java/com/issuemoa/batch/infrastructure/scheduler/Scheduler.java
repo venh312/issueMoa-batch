@@ -1,4 +1,4 @@
-package com.issuemoa.batch.scheduler;
+package com.issuemoa.batch.infrastructure.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
