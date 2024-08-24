@@ -2,6 +2,7 @@ package com.issuemoa.batch.domain;
 
 import lombok.*;
 import org.bson.types.ObjectId;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.time.LocalDateTime;
@@ -18,6 +19,8 @@ public class Board {
     private String type;
     private String title;
     private String contents;
+
+    @Indexed(unique = true)
     private String url;
     private String thumbnail;
     private List<String> favoriteUserIds;

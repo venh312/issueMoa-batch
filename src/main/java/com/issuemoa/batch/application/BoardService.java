@@ -25,8 +25,8 @@ public class BoardService {
         return boardRepository.save(board);
     }
     
-    public List<Board> saveAll(List<Board> list) {
-        return boardRepository.saveAll(list);
+    public void saveAll(List<Board> list) {
+        boardRepository.saveAll(list);
     }
 
     public void deleteByType(String type) {
