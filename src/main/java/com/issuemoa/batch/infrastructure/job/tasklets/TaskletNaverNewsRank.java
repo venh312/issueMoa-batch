@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -33,8 +35,10 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
 
     private final CrawlerUtil crawlerUtil;
     private final BoardService boardService;
+
     private String exitCode = "FAILED";
     private String exitMessage = "";
+
     private int size = 0;
 
     @Override
@@ -78,10 +82,21 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
                 }
             }
 
-            size = list.size();
-            boardService.saveAll(list);
-            this.exitCode = "COMPLETED";
+            Set<String> urls = list.stream()
+                    .map(Board::getUrl)
+                    .collect(Collectors.toSet());
 
+            // 이미 존재하는 데이터 조회
+            List<Board> existingData = boardService.findByUrlIn(urls);
+            Set<String> existUrls = existingData.stream().map(Board::getUrl).collect(Collectors.toSet());
+
+            // 이미 존재하는 데이터 필터
+            List<Board> newDataList = list.stream().filter(data -> !existUrls.contains(data.getUrl())).collect(Collectors.toList());
+
+            size = newDataList.size();
+            boardService.saveAll(newDataList);
+
+            this.exitCode = "COMPLETED";
         } catch (Exception e) {
             this.exitMessage = e.getMessage();
         }
@@ -95,7 +110,6 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
         log.info("[Tasklet 종료] Status => " + stepExecution.getStatus());
-//        log.info("[Tasklet 종료] => " + stepExecution);
         return new ExitStatus(exitCode, exitMessage);
     }
 }

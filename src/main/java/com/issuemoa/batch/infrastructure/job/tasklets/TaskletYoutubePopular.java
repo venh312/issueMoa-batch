@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -34,6 +36,7 @@ public class TaskletYoutubePopular implements Tasklet, StepExecutionListener {
 
     private String exitCode = "FAILED";
     private String exitMessage = "";
+
     private int size = 0;
 
     @Override
@@ -57,17 +60,18 @@ public class TaskletYoutubePopular implements Tasklet, StepExecutionListener {
                 nextPageToken = updateNextPageToken(result);
             } while (!nextPageToken.isEmpty());
 
-            // 인기 동영상 목록 삭제
-            if (!jsonArrayList.isEmpty()) {
-                boardService.deleteByType("youtube");
-            }
-
             List<Board> list = createBoardList(jsonArrayList);
+            Set<String> urls = list.stream().map(Board::getUrl).collect(Collectors.toSet());
 
-            size = list.size();
-            boardService.saveAll(list);
+            List<Board> existing = boardService.findByUrlIn(urls);
+            Set<String> existingUrl = existing.stream().map(Board::getUrl).collect(Collectors.toSet());
+
+            List<Board> newDataList = list.stream().filter(data -> !existingUrl.contains(data.getUrl())).collect(Collectors.toList());
+
+            size = newDataList.size();
+            boardService.saveAll(newDataList);
+
             this.exitCode = "COMPLETED";
-
         } catch (Exception e) {
             log.error("Exception occurred: {}", e.getMessage(), e);
             this.exitMessage = e.getMessage();
@@ -81,15 +85,13 @@ public class TaskletYoutubePopular implements Tasklet, StepExecutionListener {
 
     @Override
     public ExitStatus afterStep(StepExecution stepExecution) {
-        log.info("[Tasklet 종료] Status => " + stepExecution.getStatus());
-//        log.info("[Tasklet 종료] => " + stepExecution);
+        log.info("[TaskletYoutubePopular 종료] Status => " + stepExecution.getStatus());
         return new ExitStatus(exitCode, exitMessage);
     }
 
     private void addItemsToArrayList(JSONObject result, List<JSONArray> jsonArrayList) throws JSONException {
-        if (result.has("items")) {
+        if (result.has("items"))
             jsonArrayList.add(result.getJSONArray("items"));
-        }
     }
 
     private String updateNextPageToken(JSONObject result) throws JSONException {
