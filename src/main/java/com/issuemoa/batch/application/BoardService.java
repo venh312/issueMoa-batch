@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -28,20 +29,11 @@ public class BoardService {
         return boardRepository.saveAll(list);
     }
 
-    public Board updateBoard(String id, Board updatedBoard) {
-//        if (boardRepository.existsById(id)) {
-//            updatedBoard.setId(id);
-//            return boardRepository.save(updatedBoard);
-//        }
-        return null;
-    }
-
-    public void deleteById(String id) {
-        boardRepository.deleteById(id);
-    }
-
     public void deleteByType(String type) {
         boardRepository.deleteByType(type);
     }
 
+    public List<Board> findByUrlIn(Set<String> urls) {
+        return boardRepository.findByUrlIn(urls);
+    }
 }
