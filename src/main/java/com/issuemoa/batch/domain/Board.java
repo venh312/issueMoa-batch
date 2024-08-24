@@ -2,6 +2,7 @@ package com.issuemoa.batch.domain;
 
 import lombok.*;
 import org.bson.types.ObjectId;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -25,6 +26,8 @@ public class Board {
     private String thumbnail;
     private List<String> favoriteUserIds;
     private String register;
+
+    @CreatedDate
     private LocalDateTime registerDateTime;
 
     @Builder
@@ -36,6 +39,5 @@ public class Board {
         this.thumbnail = thumbnail;
         this.favoriteUserIds = new ArrayList<>();
         this.register = "BATCH";
-        this.registerDateTime = LocalDateTime.now();
     }
 }
