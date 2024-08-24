@@ -26,8 +26,6 @@ public class Board {
     private String thumbnail;
     private List<String> favoriteUserIds;
     private String register;
-
-    @CreatedDate
     private LocalDateTime registerDateTime;
 
     @Builder
@@ -39,5 +37,6 @@ public class Board {
         this.thumbnail = thumbnail;
         this.favoriteUserIds = new ArrayList<>();
         this.register = "BATCH";
+        this.registerDateTime = LocalDateTime.now();
     }
 }
