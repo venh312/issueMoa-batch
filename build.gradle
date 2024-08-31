@@ -17,6 +17,7 @@ ext {
 }
 
 dependencies {
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'

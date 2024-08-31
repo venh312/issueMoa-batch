@@ -71,14 +71,16 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
                             src = listContent.select("a > img").attr("onerror");
                     }
 
-                    Board board = Board.builder()
-                        .type("news")
-                        .title(title)
-                        .url(url)
-                        .thumbnail(src)
-                        .build();
+                    if (!title.isEmpty() && !url.isEmpty()) {
+                        Board board = Board.builder()
+                                .type("news")
+                                .title(title)
+                                .url(url)
+                                .thumbnail(src)
+                                .build();
 
-                    list.add(board);
+                        list.add(board);
+                    }
                 }
             }
 
