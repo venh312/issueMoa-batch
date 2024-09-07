@@ -1,7 +1,7 @@
 package com.issuemoa.batch.application;
 
-import com.issuemoa.batch.domain.Board;
-import com.issuemoa.batch.domain.BoardRepository;
+import com.issuemoa.batch.domain.board.Board;
+import com.issuemoa.batch.domain.board.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;

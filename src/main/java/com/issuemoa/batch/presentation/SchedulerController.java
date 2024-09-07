@@ -20,6 +20,8 @@ public class SchedulerController {
             scheduler.startJobNaverNewsRank();
         } else if (type.equals("youtube")) {
             scheduler.startJobYoutubePopular();
+        } else if (type.equals("make-keyword")) {
+            scheduler.startJobMakeKeyword();
         }
     }
 }

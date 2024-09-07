@@ -1,5 +1,6 @@
-package com.issuemoa.batch.domain;
+package com.issuemoa.batch.domain.board;
 
+import com.issuemoa.batch.domain.BaseTime;
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,6 +28,10 @@ public class Board {
     private List<String> favoriteUserIds;
     private String register;
     private LocalDateTime registerDateTime;
+
+    public String getRegisterDateTime() {
+        return BaseTime.toStringDateTime(registerDateTime);
+    }
 
     @Builder
     public Board(String type, String title, String contents, String url, String thumbnail) {

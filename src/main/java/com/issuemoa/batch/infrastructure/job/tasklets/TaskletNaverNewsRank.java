@@ -1,6 +1,6 @@
 package com.issuemoa.batch.infrastructure.job.tasklets;
 
-import com.issuemoa.batch.domain.Board;
+import com.issuemoa.batch.domain.board.Board;
 import com.issuemoa.batch.application.BoardService;
 import com.issuemoa.batch.infrastructure.util.CrawlerUtil;
 import lombok.RequiredArgsConstructor;
