@@ -1,4 +1,4 @@
-package com.issuemoa.batch.infrastructure.util;
+package com.issuemoa.batch.infrastructure.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jettison.json.JSONException;
