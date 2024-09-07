@@ -2,6 +2,7 @@ package com.issuemoa.batch.infrastructure.writer;
 
 import com.issuemoa.batch.application.KeywordService;
 import com.issuemoa.batch.domain.keyword.Keyword;
+import com.issuemoa.batch.infrastructure.utils.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
@@ -28,6 +29,7 @@ public class MakeKeywordWriter implements ItemWriter<Map<String, Integer>> {
                 Keyword keyword = Keyword.builder()
                         .keyword(key)
                         .count(count)
+                        .baseDateTime(DateUtil.getStartOfYesterday())
                         .build();
                 keywords.add(keyword);
             });
