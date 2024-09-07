@@ -57,7 +57,7 @@ public class Scheduler {
         }
     }
 
-    @Scheduled(cron = "${cron.expression.youtubePopular}")
+    @Scheduled(cron = "${cron.expression.keyword}")
     public void startJobMakeKeyword() {
         Map<String, JobParameter> jobParameterMap = new HashMap<>();
         jobParameterMap.put("requestDate", new JobParameter(String.valueOf(LocalDateTime.now())));

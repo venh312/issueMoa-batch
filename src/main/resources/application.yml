@@ -10,3 +10,4 @@ cron:
   expression:
     naverNewsRank: 0 0 * * * * # 매시 정각
     youtubePopular: 0 0 * * * * # 매시 정각
+    keyword: 0 0 2 * * * # 매일 02시
