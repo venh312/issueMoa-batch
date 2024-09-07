@@ -17,11 +17,20 @@ ext {
 }
 
 dependencies {
+	// OKT - KoreanText Noun
+	implementation files('libs/open-korean-text-2.3.1.jar')
+	implementation files('libs/scala-library-2.12.4.jar')
+	implementation files('libs/twitter-text-1.14.3.jar')
+
+	// jasypt - encrypt
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+
+	// jsoup - Crawler
+	implementation 'org.jsoup:jsoup:1.15.2'
+
 	implementation 'org.springframework.cloud:spring-cloud-starter-config'
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
-	implementation 'org.jsoup:jsoup:1.15.2'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation 'org.springframework.boot:spring-boot-starter-quartz'
