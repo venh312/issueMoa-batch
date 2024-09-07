@@ -1,4 +1,4 @@
-package com.issuemoa.batch.infrastructure.job.config;
+package com.issuemoa.batch.infrastructure.job.configs;
 
 import com.issuemoa.batch.domain.board.Board;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,6 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Configuration
-
 public class JobMakeKeywordConfig {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
