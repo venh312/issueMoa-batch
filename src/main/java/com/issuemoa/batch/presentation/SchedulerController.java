@@ -1,6 +1,7 @@
 package com.issuemoa.batch.presentation;
 
 import com.issuemoa.batch.infrastructure.scheduler.Scheduler;
+import com.issuemoa.batch.presentation.enums.BatchType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,13 +16,12 @@ public class SchedulerController {
 
     @GetMapping("/execute/{type}")
     public void executeScheduler(@PathVariable String type) {
-        log.info("[배치 실행 SchedulerController] => {}", type);
-        if (type.equals("news")) {
+        log.info("[SchedulerController.executeScheduler] ==> {}", type);
+        if (BatchType.NEWS.getValue().equals(type))
             scheduler.startJobNaverNewsRank();
-        } else if (type.equals("youtube")) {
+        else if (BatchType.YOUTUBE.getValue().equals(type))
             scheduler.startJobYoutubePopular();
-        } else if (type.equals("make-keyword")) {
+        else if (BatchType.KEYWORD.getValue().equals(type))
             scheduler.startJobMakeKeyword();
-        }
     }
 }
