@@ -16,12 +16,12 @@ public class Keyword {
     private ObjectId id;
     private String keyword;
     private int count;
-    private LocalDateTime registerDateTime;
+    private LocalDateTime baseDateTime;
 
     @Builder
-    public Keyword(String keyword, int count) {
+    public Keyword(String keyword, int count, LocalDateTime baseDateTime) {
         this.keyword = keyword;
         this.count = count;
-        this.registerDateTime = LocalDateTime.now();
+        this.baseDateTime = baseDateTime;
     }
 }

@@ -21,10 +21,12 @@ public class MakeKeywordReader implements ItemReader<List<Board>> {
 
     @Override
     public List<Board> read() throws Exception {
-        log.info("==> [MakeKeywordReader]");
+        LocalDateTime startDay = DateUtil.getStartOfYesterday();
+        LocalDateTime endDay = DateUtil.getEndOfYesterday();
+        log.info("==> [MakeKeywordReader] {} ~ {}", startDay, endDay);
 
         int size = 1000;
-        List<Board> boards = boardRepository.findByRegisterDateTimeBetween(DateUtil.getStartOfYesterday(), DateUtil.getEndOfYesterday(), PageRequest.of(page, size));
+        List<Board> boards = boardRepository.findByRegisterDateTimeBetween(startDay, endDay, PageRequest.of(page, size));
 
         // 조회 데이터가 없을 때 Reader 종료
         if (boards.isEmpty()) return null;
