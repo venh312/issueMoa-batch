@@ -28,6 +28,8 @@ public class MakeKeywordReader implements ItemReader<List<Board>> {
         int size = 1000;
         List<Board> boards = boardRepository.findByRegisterDateTimeBetween(startDay, endDay, PageRequest.of(page, size));
 
+        log.info("{}", boards);
+
         // 조회 데이터가 없을 때 Reader 종료
         if (boards.isEmpty()) return null;
 

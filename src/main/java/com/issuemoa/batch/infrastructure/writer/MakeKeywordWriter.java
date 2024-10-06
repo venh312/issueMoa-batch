@@ -25,7 +25,7 @@ public class MakeKeywordWriter implements ItemWriter<Map<String, Integer>> {
 
         items.forEach((data) -> {
             data.forEach((key, count) -> {
-                //log.info("==> [MakeKeywordWriter] {}, {}", key, count);
+                log.info("==> [MakeKeywordWriter] {}, {}", key, count);
                 Keyword keyword = Keyword.builder()
                         .keyword(key)
                         .count(count)

@@ -38,6 +38,7 @@ public class MakeKeywordProcessor implements ItemProcessor<List<Board>, Map<Stri
             phrases.forEach(phrase -> keywords.add(phrase.text()));
         });
 
+        log.info("==> [keywords] :: {}", keywords);
         Map<String, Integer> keywordCounts = new HashMap<>();
         keywords.forEach(keyword -> {
             keywordCounts.put(keyword, keywordCounts.getOrDefault(keyword, 0) + 1);
