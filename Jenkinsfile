@@ -38,7 +38,7 @@ pipeline {
                         sh "docker rm issuemoa-batch"
                     }
                     
-                    sh "docker run -d --name issuemoa-batch -p 20010:20010 --network issuemoa issuemoa/batch"
+                    sh "docker run -d --name issuemoa-batch -p 20010:20010 -v /home/venh/logs:/var/log --network issuemoa issuemoa/batch"
                 }
             }
         }
