@@ -23,7 +23,7 @@ public class MakeKeywordReader implements ItemReader<List<Board>> {
     public List<Board> read() throws Exception {
         LocalDateTime startDay = DateUtil.getStartOfYesterday();
         LocalDateTime endDay = DateUtil.getEndOfYesterday();
-        log.info("==> [MakeKeywordReader] {} ~ {}", startDay, endDay);
+        log.info("==> [MakeKeywordReader] {} ~ {}, page: {}", startDay, endDay, page);
 
         int size = 1000;
         List<Board> boards = boardRepository.findByRegisterDateTimeBetween(startDay, endDay, PageRequest.of(page, size));
