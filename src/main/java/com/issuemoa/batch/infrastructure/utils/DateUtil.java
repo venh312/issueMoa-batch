@@ -6,7 +6,7 @@ import java.time.LocalTime;
 
 public class DateUtil {
     public static LocalDateTime getStartOfYesterday() {
-        return LocalDate.now().minusDays(1).atStartOfDay();
+        return LocalDate.now().minusDays(3).atStartOfDay();
     }
 
     public static LocalDateTime getEndOfYesterday() {
