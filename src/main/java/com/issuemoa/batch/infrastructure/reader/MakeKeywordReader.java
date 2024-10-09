@@ -31,7 +31,10 @@ public class MakeKeywordReader implements ItemReader<List<Board>> {
         log.info("{}", boards);
 
         // 조회 데이터가 없을 때 Reader 종료
-        if (boards.isEmpty()) return null;
+        if (boards.isEmpty()) {
+            page = 0; // 초기화
+            return null;
+        }
 
         page++;
 
