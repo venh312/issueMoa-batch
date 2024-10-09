@@ -26,7 +26,8 @@ public class MakeKeywordReader implements ItemReader<List<Board>> {
         log.info("==> [MakeKeywordReader] {} ~ {}", startDay, endDay);
 
         int size = 1000;
-        List<Board> boards = boardRepository.findByRegisterDateTimeBetween(startDay, endDay, PageRequest.of(page, size));
+        //List<Board> boards = boardRepository.findByRegisterDateTimeBetween(startDay, endDay, PageRequest.of(page, size));
+        List<Board> boards = boardRepository.findAll(PageRequest.of(page, size)).toList();
 
         log.info("{}", boards);
 
