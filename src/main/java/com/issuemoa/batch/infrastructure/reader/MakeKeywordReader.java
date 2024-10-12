@@ -21,7 +21,7 @@ public class MakeKeywordReader implements ItemReader<List<Board>> {
 
     @Override
     public List<Board> read() throws Exception {
-        LocalDateTime startDay = DateUtil.getStartOfYesterday();
+        LocalDateTime startDay = DateUtil.getStartOfMinusDays(2);
         LocalDateTime endDay = DateUtil.getEndOfYesterday();
         log.info("==> [MakeKeywordReader] {} ~ {}, page: {}", startDay, endDay, page);
 

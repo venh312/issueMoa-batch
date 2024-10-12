@@ -29,12 +29,13 @@ public class MakeKeywordWriter implements ItemWriter<Map<String, Integer>> {
                 Keyword keyword = Keyword.builder()
                         .keyword(key)
                         .count(count)
-                        .baseDateTime(DateUtil.getStartOfYesterday())
+                        .baseDateTime(DateUtil.getStartOfMinusDays(1))
                         .build();
                 keywords.add(keyword);
             });
         });
 
+        log.info("==> [MakeKeywordWriter] :: {}건 등록", keywords.size());
         keywordService.saveAll(keywords);
     }
 }
