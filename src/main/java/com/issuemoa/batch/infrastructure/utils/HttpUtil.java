@@ -4,11 +4,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.stereotype.Component;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -81,5 +89,25 @@ public class HttpUtil {
         }
 
         return jsonObject.get();
+    }
+
+    public NodeList sendAndReceiveXml(String url, String data, boolean isPost, String contentType, String authorization, String tagName) {
+        try {
+            HttpClient httpClient = HttpClient.newHttpClient();
+            HttpRequest httpRequest = httpRequest(url, data, isPost, contentType, authorization);
+            HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            int statusCode = response.statusCode();
+            if (statusCode == 200) {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document document = builder.parse(new ByteArrayInputStream(response.body().getBytes(StandardCharsets.UTF_8)));
+                return document.getElementsByTagName(tagName);
+            } else {
+                log.info("[sendAndReceiveXml Fail] statusCode :: {}", statusCode);
+            }
+        } catch (Exception e) {
+            log.error("Error parsing XML :: " + e.getMessage(), e);
+        }
+        return null;
     }
 }

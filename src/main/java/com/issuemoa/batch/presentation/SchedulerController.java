@@ -23,5 +23,7 @@ public class SchedulerController {
             scheduler.startJobYoutubePopular();
         else if (BatchType.KEYWORD.getValue().equals(type))
             scheduler.startJobMakeKeyword();
+        else if (BatchType.STORE.getValue().equals(type))
+            scheduler.startJobStore();
     }
 }
