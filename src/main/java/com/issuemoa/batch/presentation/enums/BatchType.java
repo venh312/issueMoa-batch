@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum BatchType {
     NEWS("news"),
     YOUTUBE("youtube"),
-    KEYWORD("keyword");
+    KEYWORD("keyword"),
+    STORE("store");
 
     private final String value;
 

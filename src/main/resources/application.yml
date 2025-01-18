@@ -5,6 +5,9 @@ endpoint:
   google:
     youtube:
       popular: https://www.googleapis.com/youtube/v3/videos
+  open:
+    product:
+      store: http://openapi.price.go.kr/openApiImpl/ProductPriceInfoService/getStoreInfoSvc.do
 
 cron:
   expression:
