@@ -25,5 +25,7 @@ public class SchedulerController {
             scheduler.startJobMakeKeyword();
         else if (BatchType.STORE.getValue().equals(type))
             scheduler.startJobStore();
+        else if (BatchType.PRODUCT.getValue().equals(type))
+            scheduler.startJobProduct();
     }
 }
