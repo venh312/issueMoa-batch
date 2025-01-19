@@ -26,6 +26,7 @@ public class Scheduler {
     private final Job jobYoutubePopular;
     private final Job jobMakeKeyword;
     private final Job jobStore;
+    private final Job jobProduct;
     private final JobLauncher jobLauncher;
 
     @Scheduled(cron = "${cron.expression.naverNewsRank}")
@@ -81,6 +82,20 @@ public class Scheduler {
         try {
             log.info("[Scheduler 실행 => JobStore]");
             jobLauncher.run(jobStore, jobParameters);
+        } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
+                 JobParametersInvalidException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    public void startJobProduct() {
+        Map<String, JobParameter> jobParameterMap = new HashMap<>();
+        jobParameterMap.put("requestDate", new JobParameter(String.valueOf(LocalDateTime.now())));
+        JobParameters jobParameters = new JobParameters(jobParameterMap);
+
+        try {
+            log.info("[Scheduler 실행 => JobProduct]");
+            jobLauncher.run(jobProduct, jobParameters);
         } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException |
                  JobParametersInvalidException e) {
             log.error(e.getMessage());
