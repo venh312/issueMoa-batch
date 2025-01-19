@@ -1,22 +1,31 @@
 package com.issuemoa.batch.domain.prodcut.price;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Table(name = "productprice")
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Builder
+@Table(name = "products_price")
 @Entity
 public class ProductPrice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long storeId;
-    private Long productId;
-    private int price;
+    private String inspectDay;
+    private String goodsId;
+    private String entpId;
+    private String price;
     private String plusOneYn;
     private String dcYn;
-    private int dcStartDay;
-    private int dcEndDay;
+    private String dcStartDay;
+    private String dcEndDay;
+    private Long registerId;
+    private Long modifyId;
     private LocalDateTime registerTime;
     private LocalDateTime modifyTime;
-
 }
