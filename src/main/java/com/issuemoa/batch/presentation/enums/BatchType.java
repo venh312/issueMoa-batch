@@ -8,7 +8,8 @@ public enum BatchType {
     YOUTUBE("youtube"),
     KEYWORD("keyword"),
     STORE("store"),
-    PRODUCT("product");
+    PRODUCT("product"),
+    PRODUCT_PRICE("product-price");
 
     private final String value;
 

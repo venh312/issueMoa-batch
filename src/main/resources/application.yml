@@ -8,6 +8,7 @@ endpoint:
   open:
     product:
       info: http://openapi.price.go.kr/openApiImpl/ProductPriceInfoService/getProductInfoSvc.do
+      price: http://openapi.price.go.kr/openApiImpl/ProductPriceInfoService/getProductPriceInfoSvc.do
       store: http://openapi.price.go.kr/openApiImpl/ProductPriceInfoService/getStoreInfoSvc.do
 
 cron:

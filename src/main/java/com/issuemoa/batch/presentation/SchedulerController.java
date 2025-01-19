@@ -27,5 +27,7 @@ public class SchedulerController {
             scheduler.startJobStore();
         else if (BatchType.PRODUCT.getValue().equals(type))
             scheduler.startJobProduct();
+        else if (BatchType.PRODUCT_PRICE.getValue().equals(type))
+            scheduler.startJobProductPrice();
     }
 }
