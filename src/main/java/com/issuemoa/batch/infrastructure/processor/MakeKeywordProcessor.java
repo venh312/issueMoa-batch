@@ -9,14 +9,12 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 import scala.collection.Seq;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Component
 public class MakeKeywordProcessor implements ItemProcessor<List<Board>, Map<String, Integer>> {
+    private static final Set<String> excludeText = Set.of("EP", "ENG");
 
     @Override
     public Map<String, Integer> process(List<Board> boards) throws Exception {
@@ -35,7 +33,11 @@ public class MakeKeywordProcessor implements ItemProcessor<List<Board>, Map<Stri
             // Phrase Extraction (명사, 해시태그만)
             List<KoreanPhraseExtractor.KoreanPhrase> phrases = OpenKoreanTextProcessorJava.extractPhrases(tokens, true, true);
 
-            phrases.forEach(phrase -> keywords.add(phrase.text()));
+            phrases.forEach(phrase -> {
+                if (!excludeText.contains(phrase.text())) {
+                    keywords.add(phrase.text());
+                }
+            });
         });
 
         log.info("==> [keywords] :: {}", keywords);
