@@ -56,9 +56,6 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
             Document contents = crawlerUtil.getContents(endpointNaverNewsRank);
             Elements rankList = contents.select(".rankingnews_list");
 
-            if (!rankList.isEmpty())
-                boardService.deleteByType("news");
-
             for (Element e : rankList) {
                 for (Element listContent : e.getElementsByTag("li")) {
                     String title = listContent.select(".list_content a").text();
@@ -84,19 +81,21 @@ public class TaskletNaverNewsRank implements Tasklet, StepExecutionListener {
                 }
             }
 
-            Set<String> urls = list.stream()
-                    .map(Board::getUrl)
-                    .collect(Collectors.toSet());
+            if (!list.isEmpty()) {
+                Set<String> urls = list.stream()
+                        .map(Board::getUrl)
+                        .collect(Collectors.toSet());
 
-            // 이미 존재하는 데이터 조회
-            List<Board> existingData = boardService.findByUrlIn(urls);
-            Set<String> existUrls = existingData.stream().map(Board::getUrl).collect(Collectors.toSet());
+                // 이미 존재하는 데이터 조회
+                List<Board> existingData = boardService.findByUrlIn(urls);
+                Set<String> existUrls = existingData.stream().map(Board::getUrl).collect(Collectors.toSet());
 
-            // 이미 존재하는 데이터 필터
-            List<Board> newDataList = list.stream().filter(data -> !existUrls.contains(data.getUrl())).collect(Collectors.toList());
+                // 이미 존재하는 데이터 필터
+                List<Board> newDataList = list.stream().filter(data -> !existUrls.contains(data.getUrl())).collect(Collectors.toList());
 
-            size = newDataList.size();
-            boardService.saveAll(newDataList);
+                size = newDataList.size();
+                boardService.saveAll(newDataList);
+            }
 
             this.exitCode = "COMPLETED";
         } catch (Exception e) {

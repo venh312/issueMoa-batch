@@ -17,5 +17,3 @@ logging:
 eureka:
   client:
     enabled: false
-    register-with-eureka: false  # Eureka 서버에 등록하지 않음
-    fetch-registry: false        # 레지스트리를 가져오지 않음
