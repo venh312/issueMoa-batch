@@ -14,7 +14,7 @@ import java.util.*;
 @Slf4j
 @Component
 public class MakeKeywordProcessor implements ItemProcessor<List<Board>, Map<String, Integer>> {
-    private static final Set<String> excludeText = Set.of("EP", "ENG");
+    private static final Set<String> excludeText = Set.of("EP", "ENG", "VS");
 
     @Override
     public Map<String, Integer> process(List<Board> boards) throws Exception {
@@ -34,7 +34,7 @@ public class MakeKeywordProcessor implements ItemProcessor<List<Board>, Map<Stri
             List<KoreanPhraseExtractor.KoreanPhrase> phrases = OpenKoreanTextProcessorJava.extractPhrases(tokens, true, true);
 
             phrases.forEach(phrase -> {
-                if (!excludeText.contains(phrase.text())) {
+                if (!excludeText.contains(phrase.text().toUpperCase())) {
                     keywords.add(phrase.text());
                 }
             });
